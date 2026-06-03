@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TKD Symmetry Pro | Avaliação de Assimetria</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu">☰</button>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <button class="close-menu" id="closeMenuBtn" aria-label="Fechar menu">×</button>
+      <div class="brand">
+        <div class="logo">TKD</div>
+        <div>
+          <h1>Symmetry Pro</h1>
+          <p>Taekwondo Performance - created Natanael</p>
+        </div>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="dashboard">Dashboard</button>
+        <button class="tab" data-tab="atleta">Atleta</button>
+        <button class="tab" data-tab="salto">Teste de Salto</button>
+        <button class="tab" data-tab="forca">Carga Máxima</button>
+        <button class="tab" data-tab="diagnostico">Diagnóstico</button>
+        <button class="tab" data-tab="treino">Treino Recomendado</button>
+        <button class="tab" data-tab="relatorio">Relatório</button>
+      </nav>
+
+      <div class="note">
+        <strong>Regra científica:</strong><br>
+        Assimetria = ((Maior - Menor) / Maior) × 100
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h2>Avaliação de Assimetria de Pernas</h2>
+          <p>Para atletas de Taekwondo, pós-lesão e retorno ao esporte.</p>
+        </div>
+        <div class="status-pill" id="globalStatus">Sem avaliação</div>
+      </header>
+
+      <section id="dashboard" class="panel active">
+        <div class="grid cards-4">
+          <div class="card metric">
+            <span>Assimetria Salto</span>
+            <strong id="dashSalto">0%</strong>
+            <small>Potência e estabilidade</small>
+          </div>
+          <div class="card metric">
+            <span>Assimetria Força</span>
+            <strong id="dashForca">0%</strong>
+            <small>Carga máxima unilateral</small>
+          </div>
+          <div class="card metric">
+            <span>Índice Global</span>
+            <strong id="dashGlobal">0%</strong>
+            <small>Média entre salto e força</small>
+          </div>
+          <div class="card metric">
+            <span>Perna mais fraca</span>
+            <strong id="dashWeakLeg">-</strong>
+            <small>Base para prescrição</small>
+          </div>
+        </div>
+
+        <div class="card wide">
+          <h3>Resumo rápido</h3>
+          <p id="quickSummary">Preencha os testes de salto e carga máxima para gerar o diagnóstico automático.</p>
+          <div class="risk-scale">
+            <div><span class="dot green"></span> &lt;10% Aceitável</div>
+            <div><span class="dot orange"></span> 10-15% Atenção</div>
+            <div><span class="dot red"></span> &gt;15% Alto risco</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="atleta" class="panel">
+        <div class="card">
+          <h3>Cadastro do atleta</h3>
+          <div class="form-grid">
+            <label>Nome<input id="nome" placeholder="Nome do atleta"></label>
+            <label>Idade<input id="idade" type="number" placeholder="Ex: 18"></label>
+            <label>Peso (kg)<input id="peso" type="number" placeholder="Ex: 70"></label>
+            <label>Altura (cm)<input id="altura" type="number" placeholder="Ex: 175"></label>
+            <label>Faixa<input id="faixa" placeholder="Ex: preta"></label>
+            <label>Categoria<input id="categoria" placeholder="Ex: -68 kg"></label>
+            <label>Perna dominante
+              <select id="dominante">
+                <option>Direita</option>
+                <option>Esquerda</option>
+              </select>
+            </label>
+            <label>Histórico de lesão<input id="lesao" placeholder="Ex: LCA, posterior, tornozelo"></label>
+          </div>
+        </div>
+      </section>
+
+      <section id="salto" class="panel">
+        <div class="card">
+          <h3>Teste de Salto Unilateral</h3>
+          <p class="hint">Insira 3 tentativas por perna. O sistema usa automaticamente a melhor marca.</p>
+          <div class="mini-note"><strong>Como fazer:</strong> o atleta salta para frente com uma perna só e aterrissa controlando o joelho. Use a maior distância válida em cm. Evite o teste se houver dor, instabilidade ou pós-lesão sem liberação.</div>
+          <div class="split">
+            <div>
+              <h4>Perna Direita - cm</h4>
+              <input class="hop-r" type="number" placeholder="Tentativa 1">
+              <input class="hop-r" type="number" placeholder="Tentativa 2">
+              <input class="hop-r" type="number" placeholder="Tentativa 3">
+            </div>
+            <div>
+              <h4>Perna Esquerda - cm</h4>
+              <input class="hop-l" type="number" placeholder="Tentativa 1">
+              <input class="hop-l" type="number" placeholder="Tentativa 2">
+              <input class="hop-l" type="number" placeholder="Tentativa 3">
+            </div>
+          </div>
+          <button class="primary" onclick="calculateAll()">Calcular salto</button>
+          <div class="result-box" id="hopResult">Resultado do salto aparecerá aqui.</div>
+        </div>
+      </section>
+
+      <section id="forca" class="panel">
+        <div class="card">
+          <h3>Teste de Carga Máxima Unilateral</h3>
+          <p class="hint">Use 1RM, 3RM, 5RM ou carga submáxima segura. O importante é testar os dois lados com o mesmo padrão.</p>
+          <div class="mini-note"><strong>1RM:</strong> maior carga que o atleta consegue levantar uma única vez com técnica segura. <strong>3RM/5RM/8RM:</strong> maior carga para 3, 5 ou 8 repetições. Em pós-lesão, prefira submáximo seguro e liberação profissional.</div>
+          <div class="form-grid">
+            <label>Exercício
+              <select id="exercise">
+                <option>Leg Press Unilateral</option>
+                <option>Cadeira Extensora</option>
+                <option>Mesa Flexora</option>
+                <option>Hip Thrust Unilateral</option>
+                <option>Agachamento Búlgaro</option>
+              </select>
+            </label>
+            <label>Carga direita (kg)<input id="forceR" type="number" placeholder="Ex: 100"></label>
+            <label>Carga esquerda (kg)<input id="forceL" type="number" placeholder="Ex: 85"></label>
+            <label>Tipo de teste
+              <select id="testType">
+                <option>1RM</option>
+                <option>3RM</option>
+                <option>5RM</option>
+                <option>8RM</option>
+                <option>Submáximo seguro</option>
+              </select>
+            </label>
+          </div>
+          <button class="primary" onclick="calculateAll()">Calcular força</button>
+          <div class="result-box" id="forceResult">Resultado da força aparecerá aqui.</div>
+        </div>
+      </section>
+
+      <section id="diagnostico" class="panel">
+        <div class="card">
+          <h3>Diagnóstico Integrado</h3>
+          <div id="diagnosis" class="diagnosis">Preencha os testes para gerar o diagnóstico.</div>
+        </div>
+      </section>
+
+      <section id="treino" class="panel">
+        <div class="card">
+          <h3>Planilha de Treino Recomendada</h3>
+          <p class="hint">A prescrição muda conforme o percentual de assimetria e a perna mais fraca.</p>
+          <div class="export-actions">
+            <button class="primary" onclick="downloadTrainingImage()">Baixar planilha em imagem</button>
+            <button class="secondary" onclick="printTrainingPDF()">Baixar/Salvar planilha em PDF</button>
+          </div>
+          <div id="trainingPlan" class="training">Faça os testes para montar a planilha.</div>
+          <div class="mini-note"><strong>Observação:</strong> a planilha é uma recomendação inicial. Ajuste carga, dor, fadiga e fase da reabilitação. Reavalie a assimetria a cada 2 a 4 semanas.</div>
+        </div>
+      </section>
+
+      <section id="relatorio" class="panel">
+        <div class="card">
+          <h3>Relatório Final</h3>
+          <button class="primary" onclick="window.print()">Imprimir / Salvar relatório em PDF</button>
+          <button class="secondary" onclick="resetForm()">Limpar avaliação</button>
+          <div id="finalReport" class="report">O relatório será gerado automaticamente após os testes.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
